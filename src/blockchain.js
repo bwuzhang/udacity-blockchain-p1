@@ -66,12 +66,18 @@ class Blockchain {
         return new Promise(async (resolve, reject) => {
            if(self.height < 0) block.previousBlockHash = `0x`;
            else block.previousBlockHash = self.chain[self.height].hash;
-           self.height = self.height + 1;
-           block.height = self.height;
+           block.height = self.height + 1;
            block.time = new Date().getTime().toString().slice(0,-3);
            block.hash = SHA256(JSON.stringify(block)).toString();
-
-           self.chain.push(block);
+           
+           let errorLog = await self.validateChain();
+           if(errorLog.length > 0){
+            throw new Error("Block invalid.");
+           }
+           else{
+            self.chain.push(block);
+            self.height = self.height + 1;
+           }
            resolve(block);
         });
     }
@@ -190,7 +196,7 @@ class Blockchain {
         let self = this;
         let errorLog = [];
         return new Promise(async (resolve, reject) => {
-            for (let i = 0; j<self.height; i++){
+            for (let i = 0; i<self.height; i++){
                 if(! (await self.chain[i].validate())) errorLog.push(`Invalidate block at height ${i}`);
                 if(i!=0){
                     if(self.chain[i].previousBlockHash != self.chain[i-1].hash) errorLog.push(`Invalidate previous block hash at height ${i}`);

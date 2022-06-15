@@ -72,12 +72,9 @@ class Block {
         // Resolve with the data if the object isn't the Genesis block
         let self = this;
         if(this.height === 0){
-            console.log("get block 0");
             return(null);
         }
         else {
-            console.log("block 2");
-            console.log(JSON.parse(hex2ascii(this.body)));
             return JSON.parse(hex2ascii(this.body));
         }
 

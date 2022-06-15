@@ -16,9 +16,7 @@ class BlockchainController {
         this.submitStar();
         this.getBlockByHash();
         this.getStarsByOwner();
-        // this.jsonParser = bodyParser.json();
-        // this.urlencodedParser = this.bodyParser.urlencoded({ extended: false });
-        // this.app.use(express.bodyParser());
+        this.validateChain();
     }
 
     // Enpoint to Get a Block by Height (GET Endpoint)
@@ -80,6 +78,21 @@ class BlockchainController {
         });
     }
 
+    // Endpoint to validate the chain
+    validateChain(){
+        this.app.get("/validatechain", async (req, res) => {
+            try {
+                let errorLog = await this.blockchain.validateChain();
+                if(errorLog.length>0){
+                    return res.status(500).send("Validate Chain failed!");
+                } else {
+                    return res.status(200).send("Validate Chain success!");
+                }
+            } catch (error){
+                return res.status(500).send(error);
+            }
+        });
+    }
     // This endpoint allows you to retrieve the block by hash (GET endpoint)
     getBlockByHash() {
         this.app.get("/block/hash/:hash", async (req, res) => {
