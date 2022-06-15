@@ -16,11 +16,14 @@ class BlockchainController {
         this.submitStar();
         this.getBlockByHash();
         this.getStarsByOwner();
+        // this.jsonParser = bodyParser.json();
+        // this.urlencodedParser = this.bodyParser.urlencoded({ extended: false });
+        // this.app.use(express.bodyParser());
     }
 
     // Enpoint to Get a Block by Height (GET Endpoint)
     getBlockByHeight() {
-        this.app.get("/block/height/:height", async (req, res) => {
+        this.app.get("/block/:height", async (req, res) => {
             if(req.params.height) {
                 const height = parseInt(req.params.height);
                 let block = await this.blockchain.getBlockByHeight(height);
